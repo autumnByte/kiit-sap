@@ -962,9 +962,9 @@ const getTokens = () => ({
   pageBg: "bg-[#F8FAFC]",
   sidebarBg: "bg-white border-[#E2E8F0]",
   cardBg: "bg-white border-[#E2E8F0]",
-  cardHover: "hover:bg-slate-50 hover:shadow-sm",
+  cardHover: "hover:bg-slate-50 hover:shadow-lg",
   cardElevated: "bg-white border-[#E2E8F0]",
-  headerBg: "bg-white/95 border-[#E2E8F0]",
+  headerBg: "bg-white/80 border-[#E2E8F0]",
   inputBg: "bg-white border-[#E2E8F0] text-slate-950",
   // Text
   textPrimary: "text-slate-950",
@@ -973,8 +973,10 @@ const getTokens = () => ({
   // Dividers
   divider: "border-[#E2E8F0]",
   // Nav states
-  navActive: "bg-slate-100 text-slate-950 shadow-sm border border-slate-200",
-  navInactive: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+  navActive:
+    "bg-slate-100 text-slate-950 shadow-sm border border-slate-200 border-l-4 border-emerald-500",
+  navInactive:
+    "text-slate-600 border border-transparent hover:bg-slate-50 hover:text-slate-950 hover:border-emerald-200",
   // Accent badge
   catColors: CAT_COLORS_LIGHT,
 });
@@ -1249,27 +1251,133 @@ function QuickActions({ dm, setPage }) {
 function Dashboard({ darkMode, setPage }) {
   const t = getTokens(darkMode);
   const dm = darkMode;
+  const [timeState, setTimeState] = useState(new Date());
+  const [animatedStats, setAnimatedStats] = useState({
+    attendance: 0,
+    cgpa: 0,
+    dues: 0,
+  });
+
+  useEffect(() => {
+    const tick = () => setTimeState(new Date());
+    tick();
+    const timer = setInterval(tick, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const targets = { attendance: 87.4, cgpa: 8.62, dues: 12450 };
+    let frame = 0;
+    const total = 24;
+    const interval = setInterval(() => {
+      frame += 1;
+      setAnimatedStats({
+        attendance: +((targets.attendance * frame) / total).toFixed(1),
+        cgpa: +((targets.cgpa * frame) / total).toFixed(2),
+        dues: Math.round((targets.dues * frame) / total),
+      });
+      if (frame >= total) {
+        clearInterval(interval);
+      }
+    }, 35);
+    return () => clearInterval(interval);
+  }, []);
+
+  const hour = timeState.getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const insight =
+    hour < 12
+      ? "Start strong with your first lecture."
+      : hour < 17
+        ? "Keep the momentum going."
+        : "Wrap up the day with a quick review.";
 
   return (
     <div className={`flex-1 overflow-y-auto ${t.pageBg}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="mb-6">
-          <div
-            className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${t.textMuted}`}
-          >
-            DASHBOARD
-          </div>
-          <h1 className={`text-2xl sm:text-3xl font-semibold ${t.textPrimary}`}>
-            Good afternoon, Ananya
-          </h1>
-          <div className="flex flex-wrap items-center justify-between gap-2 mt-1">
-            <p className={`text-sm ${t.textSecondary}`}>
-              Spring 2026 · Week 14 of 20
-            </p>
-            <span className="text-xs text-emerald-500 flex items-center gap-1.5 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
-              SAP sync · 2 min ago
-            </span>
+        <div className="mb-6 relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm">
+          <div className="pointer-events-none absolute -right-10 -top-8 h-44 w-44 rounded-full bg-emerald-100 opacity-70 blur-3xl" />
+          <div className="pointer-events-none absolute -left-8 bottom-0 h-36 w-36 rounded-full bg-sky-100 opacity-70 blur-3xl" />
+          <div className="relative p-6 sm:p-8">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <div
+                  className={`text-[10px] font-semibold uppercase tracking-[0.3em] mb-3 ${t.textMuted}`}
+                >
+                  Dashboard
+                </div>
+                <h1
+                  className={`text-3xl sm:text-4xl font-semibold ${t.textPrimary}`}
+                >
+                  {greeting}, Ananya
+                </h1>
+                <p
+                  className={`mt-3 max-w-xl text-sm leading-7 ${t.textSecondary}`}
+                >
+                  {insight} It is now{" "}
+                  {timeState.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  .
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => setPage("attendance")}
+                  className="rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600"
+                >
+                  View attendance
+                </button>
+                <button
+                  onClick={() => setPage("fees")}
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+                >
+                  Pay fees
+                </button>
+                <button
+                  onClick={() => setPage("timetable")}
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
+                >
+                  Download timetable
+                </button>
+              </div>
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                      Today’s focus
+                    </div>
+                    <div className="mt-2 text-sm font-semibold text-slate-950">
+                      Keep attendance above 80%
+                    </div>
+                  </div>
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+                    ✓
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Academic insight
+                </div>
+                <div className="mt-3 text-sm text-slate-900">
+                  Your CGPA is strong, and today’s classes can push your
+                  semester average even higher.
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Quick reminder
+                </div>
+                <div className="mt-3 text-sm text-slate-900">
+                  Review Database Mgmt notes before your next lab session.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1278,7 +1386,7 @@ function Dashboard({ darkMode, setPage }) {
           {[
             {
               label: "ATTENDANCE",
-              val: "87.4%",
+              val: `${Math.min(animatedStats.attendance, 87.4).toFixed(1)}%`,
               sub: "Threshold 75%",
               badge: "+2.1%",
               valClass: "text-emerald-500",
@@ -1286,7 +1394,7 @@ function Dashboard({ darkMode, setPage }) {
             },
             {
               label: "CGPA",
-              val: "8.62",
+              val: `${animatedStats.cgpa.toFixed(2)}`,
               sub: "5 of 8 semesters",
               badge: "+0.14",
               valClass: dm ? "text-[#ededed]" : "text-gray-900",
@@ -1299,7 +1407,7 @@ function Dashboard({ darkMode, setPage }) {
             },
             {
               label: "PENDING DUES",
-              val: "₹12,450",
+              val: `₹${animatedStats.dues.toLocaleString()}`,
               sub: "Due Jun 14, 2026",
               valClass: "text-amber-500",
             },
@@ -3891,13 +3999,14 @@ export default function ScholarPortal() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [currentSemester, setCurrentSemester] = useState(SEMESTERS_LIST[0]);
 
   const dm = false;
   const t = getTokens();
 
   const navItemBase =
-    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer w-full text-left";
+    "flex items-center gap-3 px-3 py-3 rounded-xl border-l-4 border-transparent text-sm transition-all duration-200 cursor-pointer w-full text-left";
 
   const NAV = [
     {
@@ -3933,6 +4042,13 @@ export default function ScholarPortal() {
     },
   ];
 
+  const [sidebarGroupOpen, setSidebarGroupOpen] = useState(() =>
+    NAV.reduce((acc, group) => {
+      acc[group.group] = true;
+      return acc;
+    }, {}),
+  );
+
   const renderPage = () => {
     switch (page) {
       case "dashboard":
@@ -3965,41 +4081,68 @@ export default function ScholarPortal() {
   const SidebarContent = ({ collapsed }) => (
     <>
       <nav className="flex-1 overflow-y-auto py-3 px-2">
-        {NAV.map((group) => (
-          <div key={group.group} className="mb-5">
-            {!collapsed && (
+        {NAV.map((group) => {
+          const open = sidebarGroupOpen[group.group];
+          return (
+            <div key={group.group} className="mb-5">
+              {!collapsed && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSidebarGroupOpen((prev) => ({
+                      ...prev,
+                      [group.group]: !prev[group.group],
+                    }))
+                  }
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600"
+                >
+                  <span>{group.group}</span>
+                  <span
+                    className={`text-xs transition-transform duration-200 ${
+                      open ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    ▾
+                  </span>
+                </button>
+              )}
               <div
-                className={`text-[9px] font-extrabold uppercase tracking-[0.12em] px-3 mb-1.5 ${t.textMuted}`}
+                className={`overflow-hidden transition-all duration-300 ${
+                  open ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+                }`}
               >
-                {group.group}
-              </div>
-            )}
-            {group.items.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setPage(item.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={`${navItemBase} ${page === item.id ? t.navActive : t.navInactive} ${collapsed ? "justify-center gap-0 px-0 text-center" : ""} mb-0.5`}
-              >
-                <span className="text-base flex-shrink-0">{item.icon}</span>
-                {!collapsed && (
-                  <>
-                    <span className="flex-1 font-medium">{item.label}</span>
-                    {item.badge && (
-                      <span
-                        className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold ${typeof item.badge === "number" ? (dm ? "bg-[#252529] text-[#888]" : "bg-gray-100 text-gray-500") : "bg-slate-100 text-slate-600 border border-slate-200"}`}
-                      >
-                        {item.badge}
-                      </span>
+                {group.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setPage(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`${navItemBase} ${
+                      page === item.id
+                        ? "bg-slate-50 border-emerald-500 text-slate-950 shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 hover:border-emerald-200 hover:text-slate-950"
+                    } ${collapsed ? "justify-center gap-0 px-0 text-center" : ""} mb-1`}
+                  >
+                    <span className="text-lg flex-shrink-0">{item.icon}</span>
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1 font-medium">{item.label}</span>
+                        {item.badge && (
+                          <span
+                            className={`text-[9px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200`}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </button>
-            ))}
-          </div>
-        ))}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </nav>
 
       <div className={`p-3 border-t ${t.divider}`}>
@@ -4031,6 +4174,7 @@ export default function ScholarPortal() {
       onClick={() => {
         setShowHelp(false);
         setShowNotifs(false);
+        setShowProfileMenu(false);
       }}
     >
       {/* Desktop Sidebar */}
@@ -4065,7 +4209,7 @@ export default function ScholarPortal() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header
-          className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 border-b flex-shrink-0 backdrop-blur-sm ${t.headerBg}`}
+          className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 border-b flex-shrink-0 backdrop-blur-xl ${t.headerBg} shadow-sm`}
         >
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -4220,20 +4364,72 @@ export default function ScholarPortal() {
             </div>
 
             {/* Profile */}
-            <button
-              onClick={() => setPage("settings")}
-              className={`flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg transition-colors ${t.cardHover}`}
-            >
-              <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center">
-                AR
-              </div>
-              <div className="hidden sm:block text-left">
-                <div className={`text-xs font-semibold ${t.textPrimary}`}>
-                  Ananya Rao
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowProfileMenu(!showProfileMenu);
+                  setShowHelp(false);
+                  setShowNotifs(false);
+                }}
+                className={`flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-2xl border border-slate-200 bg-white/90 shadow-sm transition-all duration-200 hover:shadow-md ${showProfileMenu ? "ring-2 ring-emerald-200" : ""}`}
+              >
+                <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-xs font-bold flex items-center justify-center">
+                  AR
                 </div>
-                <div className={`text-[10px] ${t.textMuted}`}>CSE · 2027</div>
-              </div>
-            </button>
+                <div className="hidden sm:block text-left">
+                  <div className={`text-xs font-semibold ${t.textPrimary}`}>
+                    Ananya Rao
+                  </div>
+                  <div className={`text-[10px] ${t.textMuted}`}>CSE · 2027</div>
+                </div>
+              </button>
+              {showProfileMenu && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute right-0 top-14 z-50 w-56 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-200"
+                >
+                  <div className="p-4">
+                    <div className="text-sm font-semibold text-slate-950">
+                      Ananya Rao
+                    </div>
+                    <div className="text-xs text-slate-500 mt-0.5">
+                      B.Tech · Computer Science
+                    </div>
+                  </div>
+                  <div className="border-t border-slate-200" />
+                  <div className="flex flex-col gap-1 p-3 text-sm text-slate-600">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPage("settings");
+                        setShowProfileMenu(false);
+                      }}
+                      className="rounded-2xl px-3 py-2 text-left transition hover:bg-slate-50"
+                    >
+                      Account settings
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPage("communication");
+                        setShowProfileMenu(false);
+                      }}
+                      className="rounded-2xl px-3 py-2 text-left transition hover:bg-slate-50"
+                    >
+                      Contact mentor
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="rounded-2xl px-3 py-2 text-left transition hover:bg-slate-50"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
