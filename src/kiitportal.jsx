@@ -959,22 +959,22 @@ const CAT_COLORS_LIGHT = {
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 const getTokens = () => ({
   // Backgrounds
-  pageBg: "bg-[#fdf9f3]",
-  sidebarBg: "bg-[#fbf1e1] border-slate-200",
-  cardBg: "bg-[#fffaf4] border-slate-200",
-  cardHover: "hover:bg-[#f4efe3] hover:shadow-sm",
-  cardElevated: "bg-[#f7f2e7] border-slate-200",
-  headerBg: "bg-[#fbf2e5] border-slate-200",
-  inputBg: "bg-[#fcf5e8] border-slate-200 text-slate-950",
+  pageBg: "bg-[#F8FAFC]",
+  sidebarBg: "bg-white border-[#E2E8F0]",
+  cardBg: "bg-white border-[#E2E8F0]",
+  cardHover: "hover:bg-slate-50 hover:shadow-sm",
+  cardElevated: "bg-white border-[#E2E8F0]",
+  headerBg: "bg-white/95 border-[#E2E8F0]",
+  inputBg: "bg-white border-[#E2E8F0] text-slate-950",
   // Text
   textPrimary: "text-slate-950",
-  textSecondary: "text-slate-600",
+  textSecondary: "text-slate-500",
   textMuted: "text-slate-400",
   // Dividers
-  divider: "border-slate-200",
+  divider: "border-[#E2E8F0]",
   // Nav states
-  navActive: "bg-[#e6f7eb] text-slate-950 shadow-sm border border-sky-100",
-  navInactive: "text-slate-600 hover:bg-[#ecf8f2] hover:text-slate-950",
+  navActive: "bg-slate-100 text-slate-950 shadow-sm border border-slate-200",
+  navInactive: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
   // Accent badge
   catColors: CAT_COLORS_LIGHT,
 });
@@ -984,7 +984,7 @@ function StatCard({ label, value, sub, valueClass = "", dm }) {
   const t = getTokens(dm);
   return (
     <div
-      className={`border rounded-xl p-4 transition-shadow ${t.cardBg} ${t.cardHover}`}
+      className={`border rounded-xl p-3 transition-shadow ${t.cardBg} ${t.cardHover}`}
     >
       <div
         className={`text-[10px] font-semibold uppercase tracking-widest mb-2 ${t.textMuted}`}
@@ -1026,7 +1026,7 @@ function SemSelector({ value, onChange, list, dm }) {
 function Badge({ text, className = "" }) {
   return (
     <span
-      className={`text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${className}`}
+      className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border border-[#E2E8F0] uppercase tracking-wider text-slate-600 ${className}`}
     >
       {text}
     </span>
@@ -1118,7 +1118,7 @@ function QuickActions({ dm, setPage }) {
       title: "Pay fees",
       sub: "₹12,450 due Jun 14",
       badge: "DUE SOON",
-      badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+      badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
       page: "fees",
     },
     {
@@ -1127,7 +1127,7 @@ function QuickActions({ dm, setPage }) {
       title: "Register courses",
       sub: "Autumn 2026 window open",
       badge: "OPEN",
-      badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
       page: "exams",
     },
     {
@@ -1136,7 +1136,7 @@ function QuickActions({ dm, setPage }) {
       title: "Download admit card",
       sub: "Mid-sem · ready",
       badge: "READY",
-      badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
+      badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
       page: null,
       download: true,
     },
@@ -1154,7 +1154,7 @@ function QuickActions({ dm, setPage }) {
       title: "Book electives",
       sub: "4 open slots available",
       badge: "4 OPEN",
-      badgeClass: "bg-violet-50 text-violet-700 border-violet-200",
+      badgeClass: "bg-slate-100 text-slate-600 border-slate-200",
       page: "exams",
     },
     {
@@ -1189,7 +1189,7 @@ function QuickActions({ dm, setPage }) {
   };
 
   return (
-    <div className={`border rounded-3xl ${t.cardBg} shadow-sm`}>
+    <div className={`border rounded-xl ${t.cardBg} shadow-sm`}>
       <div
         className={`flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b ${t.divider}`}
       >
@@ -1210,10 +1210,10 @@ function QuickActions({ dm, setPage }) {
           <button
             key={a.id}
             onClick={() => handleClick(a)}
-            className="group flex flex-col justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 text-left transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/25"
+            className="group flex flex-col justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition duration-200 ease-out hover:shadow focus:outline-none focus:ring-2 focus:ring-sky-200/40"
           >
             <div className="flex items-center justify-between gap-4">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-xl">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 text-xl">
                 {loadingId === a.id ? "⏳" : doneId === a.id ? "✅" : a.icon}
               </div>
               {a.badge && (
@@ -3989,7 +3989,7 @@ export default function ScholarPortal() {
                     <span className="flex-1 font-medium">{item.label}</span>
                     {item.badge && (
                       <span
-                        className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold ${typeof item.badge === "number" ? (dm ? "bg-[#252529] text-[#888]" : "bg-gray-100 text-gray-500") : "bg-blue-500/15 text-blue-400 border border-blue-500/25"}`}
+                        className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold ${typeof item.badge === "number" ? (dm ? "bg-[#252529] text-[#888]" : "bg-gray-100 text-gray-500") : "bg-slate-100 text-slate-600 border border-slate-200"}`}
                       >
                         {item.badge}
                       </span>
@@ -4024,7 +4024,7 @@ export default function ScholarPortal() {
 
   return (
     <div
-      className="flex h-screen w-full overflow-hidden bg-[#fdf6ef] text-slate-900"
+      className="flex h-screen w-full overflow-hidden bg-[#F8FAFC] text-slate-900"
       style={{
         fontFamily: "'DM Sans', 'Inter', system-ui, -apple-system, sans-serif",
       }}
@@ -4040,11 +4040,11 @@ export default function ScholarPortal() {
         <div
           className={`flex items-center ${sidebarCollapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 border-b ${t.divider}`}
         >
-          <div className="flex items-center justify-center w-12 h-12 rounded-3xl bg-[#f7eedb] shadow-lg overflow-hidden">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-sm overflow-hidden">
             <img
               src={kiitLogo}
               alt="KIIT logo"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
           {!sidebarCollapsed && (
@@ -4092,7 +4092,7 @@ export default function ScholarPortal() {
 
           {/* Search */}
           <div
-            className={`flex items-center gap-2 flex-1 max-w-xl border border-slate-200 rounded-full px-4 py-2 bg-[#fff5e8] shadow-sm`}
+            className={`flex items-center gap-2 flex-1 max-w-xl border border-slate-200 rounded-full px-4 py-2 bg-slate-50 shadow-sm`}
           >
             <span className="text-slate-400">🔍</span>
             <input
@@ -4171,7 +4171,7 @@ export default function ScholarPortal() {
               {showNotifs && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className={`absolute right-0 top-10 w-80 border rounded-xl shadow-xl z-50 ${dm ? "bg-[#141416] border-[#1e1e22]" : "bg-[#fff5e7] border-slate-200"}`}
+                  className={`absolute right-0 top-10 w-80 border rounded-xl shadow-lg z-50 ${dm ? "bg-[#141416] border-[#1e1e22]" : "bg-white border-slate-200"}`}
                 >
                   <div
                     className={`px-4 py-3 border-b ${t.divider} flex items-center justify-between`}
@@ -4250,11 +4250,11 @@ export default function ScholarPortal() {
               <div
                 className={`flex items-center gap-3 px-4 py-4 border-b ${t.divider}`}
               >
-                <div className="flex items-center justify-center w-10 h-10 rounded-3xl bg-slate-100 shadow-lg overflow-hidden">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm overflow-hidden">
                   <img
                     src={kiitLogo}
                     alt="KIIT logo"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
