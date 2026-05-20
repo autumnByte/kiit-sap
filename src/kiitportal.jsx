@@ -1,5 +1,26 @@
 import { useState, useEffect, useRef } from "react";
 import kiitLogo from "./assets/kiit-logo.png";
+import { motion } from "framer-motion";
+import {
+  Home,
+  Calendar,
+  GraduationCap,
+  Clock,
+  CreditCard,
+  BarChart2,
+  Bell,
+  Target,
+  Search,
+  Pin,
+  ClipboardList,
+  DownloadCloud,
+  Hospital,
+  MessageSquare,
+  CheckCircle2,
+  Loader2,
+  Settings as SettingsIcon,
+  UserCheck,
+} from "lucide-react";
 
 // ─── MOCK DATA ───────────────────────────────────────────────────────────────
 const STUDENT = {
@@ -999,6 +1020,51 @@ function StatCard({ label, value, sub, valueClass = "", dm }) {
   );
 }
 
+function NavIcon({ Icon, active, collapsed }) {
+  return (
+    <motion.div
+      initial={{ scale: 1 }}
+      whileHover={{ scale: 1.06, x: 2 }}
+      animate={active ? { scale: 1.04 } : { scale: 1 }}
+      transition={{ type: "spring", stiffness: 320, damping: 24 }}
+      aria-hidden
+      style={{
+        width: collapsed ? 36 : 40,
+        height: collapsed ? 36 : 40,
+        borderRadius: 12,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: active ? "rgba(16,185,129,0.06)" : "transparent",
+        boxShadow: active
+          ? "0 10px 30px rgba(16,185,129,0.06), inset 0 -1px 0 rgba(255,255,255,0.6)"
+          : "none",
+      }}
+    >
+      <Icon
+        size={18}
+        strokeWidth={1.6}
+        color={active ? "#065f46" : "#475569"}
+      />
+    </motion.div>
+  );
+}
+
+function HeaderIconButton({ title, active, onClick, children }) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      title={title}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.97 }}
+      className={`relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white/80 text-slate-600 shadow-sm backdrop-blur backdrop-saturate-150 transition duration-200 ${active ? "bg-emerald-50 text-emerald-700 shadow-lg" : "hover:bg-white/95"}`}
+    >
+      {children}
+    </motion.button>
+  );
+}
+
 function ProgressBar({ pct }) {
   return (
     <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
@@ -1116,7 +1182,7 @@ function QuickActions({ dm, setPage }) {
   const actions = [
     {
       id: "fees",
-      icon: "💳",
+      icon: CreditCard,
       title: "Pay fees",
       sub: "₹12,450 due Jun 14",
       badge: "DUE SOON",
@@ -1125,7 +1191,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "register",
-      icon: "📋",
+      icon: ClipboardList,
       title: "Register courses",
       sub: "Autumn 2026 window open",
       badge: "OPEN",
@@ -1134,7 +1200,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "admit",
-      icon: "🪪",
+      icon: DownloadCloud,
       title: "Download admit card",
       sub: "Mid-sem · ready",
       badge: "READY",
@@ -1144,7 +1210,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "results",
-      icon: "📊",
+      icon: BarChart2,
       title: "View results",
       sub: "Semester 5 published",
       badge: null,
@@ -1152,7 +1218,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "electives",
-      icon: "🎯",
+      icon: Target,
       title: "Book electives",
       sub: "4 open slots available",
       badge: "4 OPEN",
@@ -1161,7 +1227,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "leave",
-      icon: "🏥",
+      icon: Hospital,
       title: "Apply leave",
       sub: "5 medical leaves remaining",
       badge: null,
@@ -1169,7 +1235,7 @@ function QuickActions({ dm, setPage }) {
     },
     {
       id: "mentor",
-      icon: "💬",
+      icon: MessageSquare,
       title: "Contact mentor",
       sub: "Dr. Mehta · CSE",
       badge: null,
@@ -1216,7 +1282,13 @@ function QuickActions({ dm, setPage }) {
           >
             <div className="flex items-center justify-between gap-4">
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 text-xl">
-                {loadingId === a.id ? "⏳" : doneId === a.id ? "✅" : a.icon}
+                {loadingId === a.id ? (
+                  <Loader2 size={20} className="animate-spin text-slate-500" />
+                ) : doneId === a.id ? (
+                  <CheckCircle2 size={20} className="text-emerald-500" />
+                ) : (
+                  <a.icon size={24} />
+                )}
               </div>
               {a.badge && (
                 <Badge text={a.badge} className={`${a.badgeClass} px-2`} />
@@ -2765,7 +2837,7 @@ function Notices({ darkMode }) {
           <div
             className={`flex items-center gap-2 border rounded-lg px-3 py-1.5 flex-1 min-w-[160px] max-w-xs ${t.inputBg}`}
           >
-            <span className={t.textMuted}>🔍</span>
+            <Search size={16} className={t.textMuted} />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -2789,9 +2861,10 @@ function Notices({ darkMode }) {
         {pinned.length > 0 && (
           <div className="mb-4">
             <div
-              className={`text-[10px] font-bold uppercase tracking-widest mb-3 ${t.textMuted}`}
+              className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest mb-3 ${t.textMuted}`}
             >
-              📌 PINNED
+              <Pin size={14} strokeWidth={2} />
+              PINNED
             </div>
             <div className="space-y-2">
               {pinned.map((n) => (
@@ -2841,7 +2914,7 @@ function Notices({ darkMode }) {
         </div>
         {filtered.length === 0 && (
           <div className={`text-center py-16 ${t.textMuted}`}>
-            <div className="text-3xl mb-2">🔔</div>
+            <Bell size={52} className="mx-auto mb-3 text-slate-400" />
             <div>No notices found.</div>
           </div>
         )}
@@ -3338,14 +3411,15 @@ function ExamsElectives({ darkMode }) {
           className={`flex gap-1 mb-5 p-1 border rounded-xl w-fit ${dm ? "border-[#1e1e22] bg-[#111113]" : "border-gray-200 bg-gray-100"}`}
         >
           {[
-            ["exams", "📅 Exam Schedule"],
-            ["electives", "🎯 Book Electives"],
-          ].map(([key, label]) => (
+            ["exams", Calendar, "Exam Schedule"],
+            ["electives", Target, "Book Electives"],
+          ].map(([key, Icon, label]) => (
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${tab === key ? (dm ? "bg-[#1e1e22] text-white shadow-sm" : "bg-white text-gray-900 shadow-sm") : dm ? "text-[#777] hover:text-[#ccc]" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${tab === key ? (dm ? "bg-[#1e1e22] text-white shadow-sm" : "bg-white text-gray-900 shadow-sm") : dm ? "text-[#777] hover:text-[#ccc]" : "text-gray-500 hover:text-gray-700"}`}
             >
+              <Icon size={16} />
               {label}
             </button>
           ))}
@@ -3575,7 +3649,7 @@ function ExamsElectives({ darkMode }) {
                   <div
                     className={`flex items-center gap-2 border rounded-lg px-3 py-1.5 ${t.inputBg}`}
                   >
-                    <span className={t.textMuted}>🔍</span>
+                    <Search size={16} className={t.textMuted} />
                     <input
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -3678,7 +3752,7 @@ function ExamsElectives({ darkMode }) {
 
               {filteredElectives.length === 0 && (
                 <div className={`text-center py-12 ${t.textMuted}`}>
-                  <div className="text-3xl mb-2">🎯</div>
+                  <Target size={52} className="mx-auto mb-3 text-slate-400" />
                   <div className="text-sm">No electives match your search.</div>
                 </div>
               )}
@@ -4000,6 +4074,7 @@ export default function ScholarPortal() {
   const [showHelp, setShowHelp] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const [currentSemester, setCurrentSemester] = useState(SEMESTERS_LIST[0]);
 
   const dm = false;
@@ -4012,32 +4087,37 @@ export default function ScholarPortal() {
     {
       group: "OVERVIEW",
       items: [
-        { id: "dashboard", label: "Dashboard", icon: "⊞" },
-        { id: "attendance", label: "Attendance", icon: "📅" },
-        { id: "academics", label: "Academics", icon: "🎓" },
-        { id: "timetable", label: "Timetable", icon: "📆" },
+        { id: "dashboard", label: "Dashboard", icon: Home },
+        { id: "attendance", label: "Attendance", icon: Calendar },
+        { id: "academics", label: "Academics", icon: GraduationCap },
+        { id: "timetable", label: "Timetable", icon: Clock },
       ],
     },
     {
       group: "RECORDS",
       items: [
-        { id: "fees", label: "Fees", icon: "💳", badge: 1 },
-        { id: "results", label: "Results", icon: "📊" },
-        { id: "notices", label: "Notices", icon: "🔔", badge: 3 },
+        { id: "fees", label: "Fees", icon: CreditCard, badge: 1 },
+        { id: "results", label: "Results", icon: BarChart2 },
+        { id: "notices", label: "Notices", icon: Bell, badge: 3 },
       ],
     },
     {
       group: "ACADEMIC",
       items: [
-        { id: "exams", label: "Exam & Electives", icon: "🎯", badge: "NEW" },
+        { id: "exams", label: "Exam & Electives", icon: Target, badge: "NEW" },
       ],
     },
     {
       group: "ACCOUNT",
       items: [
-        { id: "leave", label: "Leave", icon: "🏥" },
-        { id: "communication", label: "Communication", icon: "💬", badge: 3 },
-        { id: "settings", label: "Settings", icon: "⚙" },
+        { id: "leave", label: "Leave", icon: UserCheck },
+        {
+          id: "communication",
+          label: "Communication",
+          icon: MessageSquare,
+          badge: 3,
+        },
+        { id: "settings", label: "Settings", icon: SettingsIcon },
       ],
     },
   ];
@@ -4111,34 +4191,55 @@ export default function ScholarPortal() {
                   open ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                {group.items.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setPage(item.id);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`${navItemBase} ${
-                      page === item.id
-                        ? "bg-slate-50 border-emerald-500 text-slate-950 shadow-sm"
-                        : "text-slate-600 hover:bg-slate-50 hover:border-emerald-200 hover:text-slate-950"
-                    } ${collapsed ? "justify-center gap-0 px-0 text-center" : ""} mb-1`}
-                  >
-                    <span className="text-lg flex-shrink-0">{item.icon}</span>
-                    {!collapsed && (
-                      <>
-                        <span className="flex-1 font-medium">{item.label}</span>
-                        {item.badge && (
-                          <span
-                            className={`text-[9px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200`}
-                          >
-                            {item.badge}
+                {group.items.map((item) => {
+                  const active = page === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setPage(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      aria-current={active ? "page" : undefined}
+                      className={`${navItemBase} ${
+                        active
+                          ? "bg-emerald-50 text-slate-900"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      } ${collapsed ? "justify-center gap-0 px-0 text-center" : ""} mb-1`}
+                      style={
+                        active
+                          ? {
+                              borderLeft: "4px solid rgba(16,185,129,0.85)",
+                              boxShadow:
+                                "inset 6px 0 20px rgba(16,185,129,0.06)",
+                            }
+                          : undefined
+                      }
+                    >
+                      <span className="flex-shrink-0">
+                        <NavIcon
+                          Icon={item.icon}
+                          active={active}
+                          collapsed={collapsed}
+                        />
+                      </span>
+                      {!collapsed && (
+                        <>
+                          <span className="flex-1 font-medium ml-1">
+                            {item.label}
                           </span>
-                        )}
-                      </>
-                    )}
-                  </button>
-                ))}
+                          {item.badge && (
+                            <span
+                              className={`text-[9px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200`}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           );
@@ -4209,7 +4310,7 @@ export default function ScholarPortal() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header
-          className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 border-b flex-shrink-0 backdrop-blur-xl ${t.headerBg} shadow-sm`}
+          className={`relative z-20 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 border-b flex-shrink-0 backdrop-blur-xl ${t.headerBg} shadow-sm`}
         >
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -4235,18 +4336,37 @@ export default function ScholarPortal() {
           </div>
 
           {/* Search */}
-          <div
-            className={`flex items-center gap-2 flex-1 max-w-xl border border-slate-200 rounded-full px-4 py-2 bg-slate-50 shadow-sm`}
+          <motion.div
+            initial={false}
+            animate={
+              searchFocused
+                ? { boxShadow: "0 24px 80px rgba(16,185,129,0.16)" }
+                : { boxShadow: "0 0 0 rgba(0,0,0,0)" }
+            }
+            transition={{ duration: 0.2 }}
+            className={`flex items-center gap-3 flex-1 max-w-xl rounded-full border border-slate-200 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm transition duration-200 ${searchFocused ? "bg-white" : "hover:bg-white/95"}`}
           >
-            <span className="text-slate-400">🔍</span>
+            <motion.span
+              animate={
+                searchFocused
+                  ? { x: 2, scale: 1.05, color: "#10b981" }
+                  : { x: 0, scale: 1, color: "#94a3b8" }
+              }
+              transition={{ duration: 0.2 }}
+              className="text-slate-400"
+            >
+              <Search size={18} />
+            </motion.span>
             <input
               placeholder="Search portal…"
               className="flex-1 text-sm outline-none bg-transparent text-slate-900 placeholder:text-slate-400"
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
             />
             <span className="text-[10px] border rounded-full px-2 py-0.5 font-mono text-slate-400 hidden sm:inline-flex">
               ⌘K
             </span>
-          </div>
+          </motion.div>
 
           <div className="flex-1" />
 
@@ -4301,17 +4421,20 @@ export default function ScholarPortal() {
 
             {/* Notifications */}
             <div className="relative">
-              <button
+              <HeaderIconButton
+                title="Notifications"
+                active={showNotifs}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowNotifs(!showNotifs);
                   setShowHelp(false);
                 }}
-                className={`w-8 h-8 rounded-lg flex items-center justify-center relative transition-colors ${showNotifs ? (dm ? "bg-[#1e1e22]" : "bg-gray-100") : t.cardHover}`}
               >
-                <span className="text-sm">🔔</span>
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
-              </button>
+                <Bell size={18} />
+                <span className="absolute top-1 right-1 inline-flex h-2.5 min-w-[0.8rem] items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-semibold text-white shadow-sm">
+                  3
+                </span>
+              </HeaderIconButton>
               {showNotifs && (
                 <div
                   onClick={(e) => e.stopPropagation()}
